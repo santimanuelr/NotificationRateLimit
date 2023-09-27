@@ -23,11 +23,11 @@ public class NotificationsControllerTest {
         notification1.setMessage("asd");
         notification1.setUserId("1");
         Notification notification2 = new Notification();
-        //Then
-        //The notification is save in DB
+
         notificationController.create(notification1);
         notificationController.create(notification2);
 
+        //Then
         Flux<Notification> result = notificationController.getAll();
 
         Assertions.assertEquals(2, result.count().block());
