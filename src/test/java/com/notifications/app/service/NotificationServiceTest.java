@@ -1,7 +1,5 @@
 package com.notifications.app.service;
 
-import com.notifications.app.model.NewsNotification;
-import com.notifications.app.model.Notification;
 import com.notifications.app.model.NotificationType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,11 +16,6 @@ public class NotificationServiceTest {
     public void notificationIsSendTest() {
 
         //When
-        //I create a Notification
-        Notification notification1 = new NewsNotification();
-        notification1.setMessage("asd");
-        notification1.setUserId("1");
-
         //Then
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
 
@@ -35,12 +28,12 @@ public class NotificationServiceTest {
         //I delete all Notifications
         notificationService.deleteAll();
 
-        //Then
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
 
+        //Then
         Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
     }
 
@@ -48,14 +41,14 @@ public class NotificationServiceTest {
     public void notificationNewsIsNotSendDoToRuleTest() {
 
         //When
-        //I create a Notification
+        //I delete all Notifications
         notificationService.deleteAll();
 
-        //Then
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "2", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "3", "test"));
 
+        //Then
         Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.NEWS.name(), "1", "asd"));
     }
 
@@ -63,14 +56,14 @@ public class NotificationServiceTest {
     public void notificationStatusIsNotSendDoToRuleTest() {
 
         //When
-        //I create a Notification
+        //I delete all Notifications
         notificationService.deleteAll();
 
-        //Then
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "1", "test"));
 
+        //Then
         Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.STATUS.name(), "1", "asd"));
     }
 
