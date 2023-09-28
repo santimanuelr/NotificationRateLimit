@@ -44,16 +44,21 @@ public class NotificationServiceImpl implements NotificationService {
         ContextRules contextRules = getContextRules(notificationToSend);
         fact.put(CONTEXT_RULES_KEY, contextRules);
 
+        rulesEngine.fire(getRateLimitRules(), fact);
+
+        if (Boolean.FALSE.equals(contextRules.getCanBeSend())) { throw new Exception(); }
+
+        gateway.send(notificationToSend);
+        notificationRepository.save(notificationToSend);
+
+    }
+
+    private Rules getRateLimitRules() {
         Rules rules = new Rules();
         rules.register(new MarketingNotMoreThan3PerHourPerRecipient());
         rules.register(new NewsNotMoreThan1PerDayPerRecipient());
         rules.register(new StatusNotMoreThan2PerMinutePerRecipient());
-
-        rulesEngine.fire(rules, fact);
-        if (Boolean.FALSE.equals(contextRules.getCanBeSend())) { throw new Exception(); }
-        gateway.send(notificationToSend);
-        notificationRepository.save(notificationToSend);
-
+        return rules;
     }
 
     private ContextRules getContextRules(Notification notificationToSend) {
