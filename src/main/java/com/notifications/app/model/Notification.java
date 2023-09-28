@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="notification_type", discriminatorType = DiscriminatorType.STRING)
@@ -20,5 +22,7 @@ public class Notification {
     protected Long id;
     protected String userId;
     protected String message;
+    protected LocalDate creationDate;
+    protected Boolean canBeSend;
 
 }
