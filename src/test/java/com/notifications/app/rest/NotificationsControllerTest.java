@@ -20,7 +20,7 @@ public class NotificationsControllerTest {
         //When
         //I create a Notification
         Notification notification1 = new NewsNotification();
-        notification1.setMessage("asd");
+        notification1.setMessage("test");
         notification1.setUserId("1");
         Notification notification2 = new Notification();
 
