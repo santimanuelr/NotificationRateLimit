@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    public static final String CONTEXT_RULES_KEY = "context";
     private Gateway gateway;
     private NotificationRepository notificationRepository;
 
@@ -27,15 +28,16 @@ public class NotificationServiceImpl implements NotificationService {
 
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Facts fact = new Facts();
-        fact.put("notification", notificationToSend);
-        fact.put("notificationRepository", notificationRepository);
-        fact.put("canBeSend", Boolean.TRUE);
+        ContextRules contextRules = new ContextRules();
+        contextRules.setNotification(notificationToSend);
+        contextRules.setNotificationRepository(notificationRepository);
+        fact.put(CONTEXT_RULES_KEY, contextRules);
 
         Rules rules = new Rules();
         rules.register(new MarketingNotMoreThan3PerHourPerRecipient());
 
         rulesEngine.fire(rules, fact);
-        if (Boolean.FALSE.equals(notificationToSend.getCanBeSend())) { throw new Exception(); }
+        if (Boolean.FALSE.equals(contextRules.getCanBeSend())) { throw new Exception(); }
 
         notificationRepository.save(notificationToSend);
 
