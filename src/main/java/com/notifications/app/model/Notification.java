@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -20,14 +21,14 @@ public class Notification {
     protected Long id;
     protected String userId;
     protected String message;
-    protected LocalDate creationDate;
+    protected LocalDateTime creationDate;
     protected Boolean canBeSend;
 
 
     public Notification(String userId, String message) {
         this.userId = userId;
         this.message = message;
-        this.creationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
         this.canBeSend = Boolean.TRUE;
     }
 }
