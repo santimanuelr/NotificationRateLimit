@@ -53,8 +53,25 @@ public class NotificationServiceTest {
 
         //Then
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "2", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "3", "test"));
 
         Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.NEWS.name(), "1", "asd"));
+    }
+
+    @Test
+    public void notificationStatusIsNotSendDoToRuleTest() {
+
+        //When
+        //I create a Notification
+        notificationService.deleteAll();
+
+        //Then
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.STATUS.name(), "1", "test"));
+
+        Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.STATUS.name(), "1", "asd"));
     }
 
 }

@@ -7,6 +7,7 @@ import com.notifications.app.respository.NotificationRepository;
 import com.notifications.app.respository.StatusRepository;
 import com.notifications.app.rules.MarketingNotMoreThan3PerHourPerRecipient;
 import com.notifications.app.rules.NewsNotMoreThan1PerDayPerRecipient;
+import com.notifications.app.rules.StatusNotMoreThan2PerMinutePerRecipient;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
@@ -46,10 +47,11 @@ public class NotificationServiceImpl implements NotificationService {
         Rules rules = new Rules();
         rules.register(new MarketingNotMoreThan3PerHourPerRecipient());
         rules.register(new NewsNotMoreThan1PerDayPerRecipient());
+        rules.register(new StatusNotMoreThan2PerMinutePerRecipient());
 
         rulesEngine.fire(rules, fact);
         if (Boolean.FALSE.equals(contextRules.getCanBeSend())) { throw new Exception(); }
-
+        gateway.send(notificationToSend);
         notificationRepository.save(notificationToSend);
 
     }
