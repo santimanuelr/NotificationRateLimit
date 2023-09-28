@@ -1,22 +1,23 @@
 package com.notifications.app.rules;
 
 import com.notifications.app.model.MarketingNotification;
+import com.notifications.app.model.NewsNotification;
 import com.notifications.app.model.Notification;
 import com.notifications.app.respository.NotificationRepository;
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
-@Rule(name = "MarketingNotMore3PerHourPerRecipient", description = "Prevent send more Notifications than 3 per hour per recipient")
-public class MarketingNotMore3PerHourPerRecipient {
+@Rule(name = "NewsNotMoreThan1PerDayPerRecipient",
+        description = "Prevent send more News Notifications than 1 per day per recipient")
+public class NewsNotMoreThan1PerDayPerRecipient {
 
     @Condition
-    public boolean isMarketingNotification(@Fact("notification") Notification notification) {
-        return notification instanceof MarketingNotification;
+    public boolean isNewsNotification(@Fact("notification") Notification notification) {
+        return notification instanceof NewsNotification;
     }
 
     @Action

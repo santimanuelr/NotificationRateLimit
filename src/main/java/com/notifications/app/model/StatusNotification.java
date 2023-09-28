@@ -11,4 +11,10 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class StatusNotification extends Notification {
+
+    @Builder
+    public StatusNotification(String userId, String message) {
+        super(userId, message);
+    }
+
 }

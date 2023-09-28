@@ -2,7 +2,6 @@ package com.notifications.app.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,6 @@ import java.time.LocalDate;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="notification_type", discriminatorType = DiscriminatorType.STRING)
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
@@ -25,4 +23,11 @@ public class Notification {
     protected LocalDate creationDate;
     protected Boolean canBeSend;
 
+
+    public Notification(String userId, String message) {
+        this.userId = userId;
+        this.message = message;
+        this.creationDate = LocalDate.now();
+        this.canBeSend = Boolean.TRUE;
+    }
 }

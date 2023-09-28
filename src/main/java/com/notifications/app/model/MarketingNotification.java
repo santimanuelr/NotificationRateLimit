@@ -11,4 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class MarketingNotification extends Notification {
+
+    @Builder
+    public MarketingNotification(String userId, String message) {
+        super(userId, message);
+    }
 }

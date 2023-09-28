@@ -1,10 +1,8 @@
 package com.notifications.app.service;
 
-import com.notifications.app.model.MarketingNotification;
-import com.notifications.app.model.NewsNotification;
-import com.notifications.app.model.Notification;
+import com.notifications.app.model.*;
 import com.notifications.app.respository.NotificationRepository;
-import com.notifications.app.rules.MarketingNotMore3PerHourPerRecipient;
+import com.notifications.app.rules.MarketingNotMoreThan3PerHourPerRecipient;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
@@ -25,24 +23,48 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void send(String type, String userId, String message) throws Exception {
 
-        MarketingNotification notification1 = new MarketingNotification();
-        notification1.setMessage("asd");
-        notification1.setUserId("1");
+        Notification notificationToSend = buildNotification(type, userId, message);
 
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Facts fact = new Facts();
-        fact.put("notification", notification1);
+        fact.put("notification", notificationToSend);
         fact.put("notificationRepository", notificationRepository);
         fact.put("canBeSend", Boolean.TRUE);
 
         Rules rules = new Rules();
-        rules.register(new MarketingNotMore3PerHourPerRecipient());
+        rules.register(new MarketingNotMoreThan3PerHourPerRecipient());
 
         rulesEngine.fire(rules, fact);
-        if (Boolean.FALSE.equals(notification1.getCanBeSend())) { throw new Exception(); }
+        if (Boolean.FALSE.equals(notificationToSend.getCanBeSend())) { throw new Exception(); }
 
-        notificationRepository.save(notification1);
+        notificationRepository.save(notificationToSend);
 
+    }
+
+    private Notification buildNotification(String type, String userId, String message) {
+        switch (NotificationType.valueOf(type)) {
+            case MARKETING -> {
+                return MarketingNotification.builder()
+                        .userId(userId)
+                        .message(message)
+                        .build();
+            }
+            case NEWS -> {
+                return NewsNotification.builder()
+                        .userId(userId)
+                        .message(message)
+                        .build();
+            }
+            case STATUS -> {
+                return StatusNotification.builder()
+                        .userId(userId)
+                        .message(message)
+                        .build();
+            }
+            default -> {
+                return new Notification();
+            }
+        }
     }
 
     @Override
