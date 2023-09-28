@@ -11,7 +11,7 @@ import org.jeasy.rules.annotation.Rule;
 
 import java.util.List;
 
-import static com.notifications.app.rules.utils.DateUtils.isMoreThanOneDay;
+import static com.notifications.app.rules.utils.DateUtils.isMoreThanOneDayAgo;
 import static com.notifications.app.service.NotificationServiceImpl.CONTEXT_RULES_KEY;
 
 @Rule(name = "NewsNotMoreThan1PerDayPerRecipient",
@@ -29,8 +29,8 @@ public class NewsNotMoreThan1PerDayPerRecipient {
         NewsRepository notificationRepository = contextRules.getNewsRepository();
         List<Notification> notifications = notificationRepository.findTop1ByUserIdOrderByCreationDateDesc(
                 notification.getUserId());
-        Long countLastHour = notifications.stream().filter(n -> isMoreThanOneDay(n.getCreationDate())).count();
-        contextRules.setCanBeSend(countLastHour < 1);
+        Long countLastDay = notifications.stream().filter(n -> isMoreThanOneDayAgo(n.getCreationDate())).count();
+        contextRules.setCanBeSend(countLastDay < 1);
     }
 
 }

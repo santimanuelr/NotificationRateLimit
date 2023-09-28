@@ -9,10 +9,9 @@ import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.notifications.app.rules.utils.DateUtils.isMoreThanOneHourAgo;
 import static com.notifications.app.service.NotificationServiceImpl.CONTEXT_RULES_KEY;
 
 @Rule(name = "MarketingNotMore3PerHourPerRecipient", description = "Prevent send more Notifications than 3 per hour per recipient")
@@ -29,11 +28,7 @@ public class MarketingNotMoreThan3PerHourPerRecipient {
         MarketingRepository notificationRepository = contextRules.getMarketingRepository();
         List<Notification> notifications = notificationRepository.findTop3ByUserIdOrderByCreationDateDesc(
                 notification.getUserId());
-        LocalDateTime now = LocalDateTime.now();
-        Long countLastHour = notifications.stream().filter(n -> {
-            Duration duration = Duration.between(n.getCreationDate(), now);
-            return duration.toHours() < 1;
-        }).count();
+        Long countLastHour = notifications.stream().filter(n -> isMoreThanOneHourAgo(n.getCreationDate())).count();
         contextRules.setCanBeSend(countLastHour < 3);
     }
 }
