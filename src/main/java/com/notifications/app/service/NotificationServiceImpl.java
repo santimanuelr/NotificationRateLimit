@@ -2,8 +2,11 @@ package com.notifications.app.service;
 
 import com.notifications.app.model.*;
 import com.notifications.app.respository.MarketingRepository;
+import com.notifications.app.respository.NewsRepository;
 import com.notifications.app.respository.NotificationRepository;
+import com.notifications.app.respository.StatusRepository;
 import com.notifications.app.rules.MarketingNotMoreThan3PerHourPerRecipient;
+import com.notifications.app.rules.NewsNotMoreThan1PerDayPerRecipient;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
 import org.jeasy.rules.api.RulesEngine;
@@ -17,11 +20,17 @@ public class NotificationServiceImpl implements NotificationService {
     private Gateway gateway;
     private NotificationRepository notificationRepository;
     private MarketingRepository marketingRepository;
+    private NewsRepository newsRepository;
+    private StatusRepository statusRepository;
 
-    public NotificationServiceImpl(Gateway gateway, NotificationRepository notificationRepository, MarketingRepository marketingRepository) {
+    public NotificationServiceImpl(Gateway gateway, NotificationRepository notificationRepository,
+                                   MarketingRepository marketingRepository, NewsRepository newsRepository,
+                                   StatusRepository statusRepository) {
         this.gateway = gateway;
         this.notificationRepository = notificationRepository;
         this.marketingRepository = marketingRepository;
+        this.newsRepository = newsRepository;
+        this.statusRepository = statusRepository;
     }
 
     @Override
@@ -31,20 +40,28 @@ public class NotificationServiceImpl implements NotificationService {
 
         RulesEngine rulesEngine = new DefaultRulesEngine();
         Facts fact = new Facts();
-        ContextRules contextRules = new ContextRules();
-        contextRules.setNotification(notificationToSend);
-        contextRules.setNotificationRepository(notificationRepository);
-        contextRules.setMarketingRepository(marketingRepository);
+        ContextRules contextRules = getContextRules(notificationToSend);
         fact.put(CONTEXT_RULES_KEY, contextRules);
 
         Rules rules = new Rules();
         rules.register(new MarketingNotMoreThan3PerHourPerRecipient());
+        rules.register(new NewsNotMoreThan1PerDayPerRecipient());
 
         rulesEngine.fire(rules, fact);
         if (Boolean.FALSE.equals(contextRules.getCanBeSend())) { throw new Exception(); }
 
         notificationRepository.save(notificationToSend);
 
+    }
+
+    private ContextRules getContextRules(Notification notificationToSend) {
+        ContextRules contextRules = new ContextRules();
+        contextRules.setNotification(notificationToSend);
+        contextRules.setNotificationRepository(notificationRepository);
+        contextRules.setMarketingRepository(marketingRepository);
+        contextRules.setNewsRepository(newsRepository);
+        contextRules.setStatusNotification(statusRepository);
+        return contextRules;
     }
 
     private Notification buildNotification(String type, String userId, String message) {

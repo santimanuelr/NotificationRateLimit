@@ -29,13 +29,10 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void notificationIsNotSendDoToRuleTest() {
+    public void notificationMarketingIsNotSendDoToRuleTest() {
 
         //When
-        //I create a Notification
-        Notification notification1 = new NewsNotification();
-        notification1.setMessage("asd");
-        notification1.setUserId("1");
+        //I delete all Notifications
         notificationService.deleteAll();
 
         //Then
@@ -44,7 +41,20 @@ public class NotificationServiceTest {
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
         Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
 
-        Assertions.assertThrows(Exception.class, () -> notificationService.send("MARKETING", "1", "asd"));
+        Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
+    }
+
+    @Test
+    public void notificationNewsIsNotSendDoToRuleTest() {
+
+        //When
+        //I create a Notification
+        notificationService.deleteAll();
+
+        //Then
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
+
+        Assertions.assertThrows(Exception.class, () -> notificationService.send(NotificationType.NEWS.name(), "1", "asd"));
     }
 
 }
