@@ -1,6 +1,7 @@
 package com.notifications.app.service;
 
 import com.notifications.app.model.*;
+import com.notifications.app.respository.MarketingRepository;
 import com.notifications.app.respository.NotificationRepository;
 import com.notifications.app.rules.MarketingNotMoreThan3PerHourPerRecipient;
 import org.jeasy.rules.api.Facts;
@@ -15,10 +16,12 @@ public class NotificationServiceImpl implements NotificationService {
     public static final String CONTEXT_RULES_KEY = "context";
     private Gateway gateway;
     private NotificationRepository notificationRepository;
+    private MarketingRepository marketingRepository;
 
-    public NotificationServiceImpl(Gateway gateway, NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(Gateway gateway, NotificationRepository notificationRepository, MarketingRepository marketingRepository) {
         this.gateway = gateway;
         this.notificationRepository = notificationRepository;
+        this.marketingRepository = marketingRepository;
     }
 
     @Override
@@ -31,6 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
         ContextRules contextRules = new ContextRules();
         contextRules.setNotification(notificationToSend);
         contextRules.setNotificationRepository(notificationRepository);
+        contextRules.setMarketingRepository(marketingRepository);
         fact.put(CONTEXT_RULES_KEY, contextRules);
 
         Rules rules = new Rules();

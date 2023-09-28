@@ -2,6 +2,7 @@ package com.notifications.app.service;
 
 import com.notifications.app.model.NewsNotification;
 import com.notifications.app.model.Notification;
+import com.notifications.app.model.NotificationType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class NotificationServiceTest {
         notification1.setUserId("1");
 
         //Then
-        Assertions.assertDoesNotThrow(() -> notificationService.send("MARKETING", "1", "asd"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
 
     }
 
@@ -38,9 +39,10 @@ public class NotificationServiceTest {
         notificationService.deleteAll();
 
         //Then
-        Assertions.assertDoesNotThrow(() -> notificationService.send("MARKETING", "1", "asd"));
-        Assertions.assertDoesNotThrow(() -> notificationService.send("MARKETING", "1", "asd"));
-        Assertions.assertDoesNotThrow(() -> notificationService.send("MARKETING", "1", "asd"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.MARKETING.name(), "1", "test"));
+        Assertions.assertDoesNotThrow(() -> notificationService.send(NotificationType.NEWS.name(), "1", "test"));
 
         Assertions.assertThrows(Exception.class, () -> notificationService.send("MARKETING", "1", "asd"));
     }

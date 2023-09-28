@@ -3,7 +3,7 @@ package com.notifications.app.rules;
 import com.notifications.app.model.ContextRules;
 import com.notifications.app.model.MarketingNotification;
 import com.notifications.app.model.Notification;
-import com.notifications.app.respository.NotificationRepository;
+import com.notifications.app.respository.MarketingRepository;
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
@@ -26,7 +26,7 @@ public class MarketingNotMoreThan3PerHourPerRecipient {
     @Action
     public void checkRateLimit(@Fact(CONTEXT_RULES_KEY) ContextRules contextRules) {
         Notification notification = contextRules.getNotification();
-        NotificationRepository notificationRepository = contextRules.getNotificationRepository();
+        MarketingRepository notificationRepository = contextRules.getMarketingRepository();
         List<Notification> notifications = notificationRepository.findTop3ByUserIdOrderByCreationDateDesc(
                 notification.getUserId());
         LocalDateTime now = LocalDateTime.now();
